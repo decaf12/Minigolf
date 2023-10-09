@@ -63,6 +63,7 @@ public class BallController : MonoBehaviour
     private void Putt()
     {
         ball.AddForce(Quaternion.Euler(0, angle, 0) * Vector3.forward * maxPower * power, ForceMode.Impulse);
+        power = 0;
         powerUpTime = 0;
         powerSlider.value = 0;
     }
