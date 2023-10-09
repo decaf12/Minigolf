@@ -10,6 +10,7 @@ public class BallController : MonoBehaviour
     public float lineLength;
     private LineRenderer line;
     private Rigidbody ball;
+    public float minHoleTime;
     private float angle;
     private float powerUpTime;
     private float power;
@@ -19,6 +20,7 @@ public class BallController : MonoBehaviour
     }
 
     private float putts;
+    private float holeTime;
 
     public float Putts
     {
@@ -36,10 +38,17 @@ public class BallController : MonoBehaviour
         powerUpTime = 0;
         putts = 0;
         power = 0;
+        holeTime = 0;
     }
 
     void Update()
     {
+        if (ball.velocity.magnitude > 0.01f)
+        {
+            line.enabled = false;
+            return;
+        }
+
         if (Input.GetKey(KeyCode.A))
         {
             ChangeAngle(-1);
@@ -66,6 +75,10 @@ public class BallController : MonoBehaviour
 
     private void UpdateLinePositions()
     {
+        if (holeTime == 0)
+        {
+            line.enabled = true;
+        }
         line.SetPosition(0, transform.position);
         line.SetPosition(1, transform.position + Quaternion.Euler(0, angle, 0) * Vector3.forward * lineLength);
     }
@@ -82,5 +95,37 @@ public class BallController : MonoBehaviour
     {
         powerUpTime += Time.deltaTime;
         power = Mathf.PingPong(powerUpTime, 1);
+    }
+
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Hole")
+        {
+            CountHoleTime();
+        }
+    }
+
+    private void CountHoleTime()
+    {
+        holeTime += Time.deltaTime;
+        if (holeTime >= minHoleTime)
+        {
+            Debug.Log($"I'm in the hole and it only took me {putts} putts to get it in.");
+            holeTime = 0;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Hole")
+        {
+            LeftHole();
+        }
+    }
+
+    private void LeftHole()
+    {
+        holeTime = 0;
     }
 }
