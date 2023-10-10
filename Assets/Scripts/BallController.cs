@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class BallController : MonoBehaviour
 {
@@ -51,24 +52,16 @@ public class BallController : MonoBehaviour
             return;
         }
 
-        // if (Input.GetKey(KeyCode.A))
-        // {
-        //     ChangeAngle(-1);
-        // }
-        // if (Input.GetKey(KeyCode.D))
-        // {
-        //     ChangeAngle(1);
-        // }
         Vector3? worldPoint = CastMouseClickRay();
         if (!worldPoint.HasValue)
         {
             return;
         }
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonUp(0))
         {
             Putt(worldPoint.Value);
         }
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0))
         {
             PowerUp();
         }
@@ -94,7 +87,11 @@ public class BallController : MonoBehaviour
         {
             line.enabled = true;
         }
-        Vector3 deltaPos = (worldPoint - transform.position).normalized * lineLength;
+        Vector3 deltaPosRaw = worldPoint - transform.position;
+        Vector3 deltaPos = (deltaPosRaw.magnitude > 1 
+            ? deltaPosRaw.normalized
+            : deltaPosRaw)
+            * lineLength;
         Vector3[] positions = {
             transform.position,
             transform.position + deltaPos
