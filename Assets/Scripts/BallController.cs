@@ -27,6 +27,8 @@ public class BallController : MonoBehaviour
         get {return putts;}
     }
 
+    private Vector3 lastPosition;
+
     void Awake()
     {
         ball = GetComponent<Rigidbody>();
@@ -85,6 +87,7 @@ public class BallController : MonoBehaviour
 
     private void Putt()
     {
+        lastPosition = transform.position;
         ball.AddForce(Quaternion.Euler(0, angle, 0) * Vector3.forward * maxPower * power, ForceMode.Impulse);
         power = 0;
         powerUpTime = 0;
@@ -127,5 +130,15 @@ public class BallController : MonoBehaviour
     private void LeftHole()
     {
         holeTime = 0;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.tag == "Out Of Bounds")
+        {
+            ball.velocity = Vector3.zero;
+            ball.angularVelocity = Vector3.zero;
+            transform.position = lastPosition;
+        }
     }
 }
