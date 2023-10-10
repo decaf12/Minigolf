@@ -1561,7 +1561,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxPower: 0.7
   changeAngleSpeed: 40
-  lineLength: 0.5
+  lineLength: 0.7
   minHoleTime: 2
 --- !u!96 &1671560374
 TrailRenderer:

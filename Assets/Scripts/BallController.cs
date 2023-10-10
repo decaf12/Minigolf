@@ -51,44 +51,62 @@ public class BallController : MonoBehaviour
             return;
         }
 
-        if (Input.GetKey(KeyCode.A))
+        // if (Input.GetKey(KeyCode.A))
+        // {
+        //     ChangeAngle(-1);
+        // }
+        // if (Input.GetKey(KeyCode.D))
+        // {
+        //     ChangeAngle(1);
+        // }
+        Vector3? worldPoint = CastMouseClickRay();
+        if (!worldPoint.HasValue)
         {
-            ChangeAngle(-1);
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            ChangeAngle(1);
+            return;
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            Putt();
+            Putt(worldPoint.Value);
         }
         if (Input.GetKey(KeyCode.Space))
         {
             PowerUp();
         }
-        UpdateLinePositions();
+        UpdateLinePositions(worldPoint.Value);
     }
 
-    private void ChangeAngle(int direction)
+    private Vector3? CastMouseClickRay()
     {
-       angle += changeAngleSpeed * Time.deltaTime * direction;
+        Vector3 screenMousePosFar = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.farClipPlane);
+        Vector3 screenMousePosNear = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane);
+
+        Vector3 worldMousePosFar = Camera.main.ScreenToWorldPoint(screenMousePosFar);
+        Vector3 worldMousePosNear = Camera.main.ScreenToWorldPoint(screenMousePosNear);
+
+        return Physics.Raycast(worldMousePosNear, worldMousePosFar - worldMousePosNear, out RaycastHit hit, float.PositiveInfinity)
+            ? hit.point
+            : null;
     }
 
-    private void UpdateLinePositions()
+    private void UpdateLinePositions(Vector3 worldPoint)
     {
         if (holeTime == 0)
         {
             line.enabled = true;
         }
-        line.SetPosition(0, transform.position);
-        line.SetPosition(1, transform.position + Quaternion.Euler(0, angle, 0) * Vector3.forward * lineLength);
+        Vector3 deltaPos = (worldPoint - transform.position).normalized * lineLength;
+        Vector3[] positions = {
+            transform.position,
+            transform.position + deltaPos
+        };
+        
+        line.SetPositions(positions);
     }
 
-    private void Putt()
+    private void Putt(Vector3 worldPoint)
     {
         lastPosition = transform.position;
-        ball.AddForce(Quaternion.Euler(0, angle, 0) * Vector3.forward * maxPower * power, ForceMode.Impulse);
+        ball.AddForce((worldPoint - lastPosition).normalized * maxPower * power, ForceMode.Impulse);
         power = 0;
         powerUpTime = 0;
         ++putts;
