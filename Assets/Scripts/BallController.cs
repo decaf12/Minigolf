@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -9,7 +10,7 @@ public class BallController : MonoBehaviour
 {
     public float maxPower;
     public float changeAngleSpeed;
-    public float lineLength;
+    public float lineLengthMultiplier;
     private LineRenderer line;
     private Rigidbody ball;
     public float minHoleTime;
@@ -95,7 +96,16 @@ public class BallController : MonoBehaviour
         Vector3 deltaPos = (deltaPosRaw.magnitude > 1 
             ? deltaPosRaw.normalized
             : deltaPosRaw)
-            * lineLength;
+            * lineLengthMultiplier;
+
+        if (Physics.Raycast(transform.position, deltaPos, out RaycastHit hit, deltaPos.magnitude))
+        {
+            if (hit.collider?.tag == "Course")
+            {
+                deltaPos = hit.point - transform.position;
+            }
+        }
+
         Vector3[] positions = {
             transform.position,
             transform.position + deltaPos
