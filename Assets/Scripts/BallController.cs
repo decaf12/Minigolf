@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -57,6 +58,7 @@ public class BallController : MonoBehaviour
         {
             return;
         }
+
         if (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonUp(0))
         {
             Putt(worldPoint.Value);
@@ -87,6 +89,8 @@ public class BallController : MonoBehaviour
         {
             line.enabled = true;
         }
+        worldPoint.y = transform.position.y;
+
         Vector3 deltaPosRaw = worldPoint - transform.position;
         Vector3 deltaPos = (deltaPosRaw.magnitude > 1 
             ? deltaPosRaw.normalized
