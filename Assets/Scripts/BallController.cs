@@ -14,12 +14,10 @@ public class BallController : MonoBehaviour
     private LineRenderer line;
     private Rigidbody ball;
     public float minHoleTime;
-    private float angle;
-    private float powerUpTime;
-    private float power;
+    private float powerPercent;
     public float Power
     {
-        get {return power;}
+        get {return powerPercent;}
     }
 
     private float putts;
@@ -27,10 +25,11 @@ public class BallController : MonoBehaviour
 
     public float Putts
     {
-        get {return putts;}
+        get { return putts; }
     }
 
     private Vector3 lastPosition;
+    private Vector3 rawCueLine;
 
     void Awake()
     {
@@ -40,18 +39,22 @@ public class BallController : MonoBehaviour
            The default is too low. Raise it to 1000. */
         ball.maxAngularVelocity = 1000; 
         line = GetComponent<LineRenderer>();
-        powerUpTime = 0;
         putts = 0;
-        power = 0;
+        powerPercent = 0;
         holeTime = 0;
     }
 
     void Update()
     {
-        if (ball.velocity.magnitude > 0.01f)
+        if (ball.velocity.magnitude > 0.01f || holeTime > 0)
         {
             line.enabled = false;
+            powerPercent = 0;
             return;
+        }
+        else
+        {
+            line.enabled = true;
         }
 
         Vector3? worldPoint = CastMouseClickRay();
@@ -60,15 +63,15 @@ public class BallController : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonUp(0))
+        rawCueLine = CalculateRawCueLine(worldPoint.Value);
+
+        UpdatePower();
+        UpdateLinePositions();
+
+        if (Input.GetMouseButtonUp(0))
         {
             Putt(worldPoint.Value);
         }
-        if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0))
-        {
-            PowerUp();
-        }
-        UpdateLinePositions(worldPoint.Value);
     }
 
     private Vector3? CastMouseClickRay()
@@ -84,31 +87,34 @@ public class BallController : MonoBehaviour
             : null;
     }
 
-    private void UpdateLinePositions(Vector3 worldPoint)
+    private Vector3 CalculateRawCueLine(Vector3 worldPoint)
     {
-        if (holeTime == 0)
-        {
-            line.enabled = true;
-        }
         worldPoint.y = transform.position.y;
 
-        Vector3 deltaPosRaw = worldPoint - transform.position;
-        Vector3 deltaPos = (deltaPosRaw.magnitude > 1 
-            ? deltaPosRaw.normalized
-            : deltaPosRaw)
+        return worldPoint - transform.position;
+    }
+    private void UpdatePower()
+    {
+        powerPercent = Math.Min(rawCueLine.magnitude, 1);
+    }
+    private void UpdateLinePositions()
+    {
+        Vector3 cueLine = (rawCueLine.magnitude > 1 
+            ? rawCueLine.normalized
+            : rawCueLine)
             * lineLengthMultiplier;
 
-        if (Physics.Raycast(transform.position, deltaPos, out RaycastHit hit, deltaPos.magnitude))
+        if (Physics.Raycast(transform.position, cueLine, out RaycastHit hit, cueLine.magnitude))
         {
             if (hit.collider?.tag == "Course")
             {
-                deltaPos = hit.point - transform.position;
+                cueLine = hit.point - transform.position;
             }
         }
 
         Vector3[] positions = {
             transform.position,
-            transform.position + deltaPos
+            transform.position + cueLine
         };
         
         line.SetPositions(positions);
@@ -117,18 +123,10 @@ public class BallController : MonoBehaviour
     private void Putt(Vector3 worldPoint)
     {
         lastPosition = transform.position;
-        ball.AddForce((worldPoint - lastPosition).normalized * maxPower * power, ForceMode.Impulse);
-        power = 0;
-        powerUpTime = 0;
+        ball.AddForce((worldPoint - lastPosition).normalized * maxPower * powerPercent, ForceMode.Impulse);
+        powerPercent = 0;
         ++putts;
     }
-
-    private void PowerUp()
-    {
-        powerUpTime += Time.deltaTime;
-        power = Mathf.PingPong(powerUpTime, 1);
-    }
-
 
     private void OnTriggerStay(Collider other)
     {
