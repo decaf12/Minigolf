@@ -43,7 +43,6 @@ public class BallController : MonoBehaviour
         ball.maxAngularVelocity = 1000;
         line = GetComponent<LineRenderer>();
         trail = GetComponent<TrailRenderer>();
-        trailDuration = trail.time;
         putts = 0;
         powerPercent = 0;
         holeTime = 0;
@@ -183,7 +182,8 @@ public class BallController : MonoBehaviour
 
         ball.velocity = Vector3.zero;
         ball.angularVelocity = Vector3.zero;
-        GetComponent<MeshRenderer>().material.SetColor("_Color", colour);
+        GetComponent<MeshRenderer>().material.color = colour;
+        Debug.Log($"Ball colour: {colour}");
         line.material.SetColor("_Color", colour);
         line.enabled = true;
         putts = 0;
