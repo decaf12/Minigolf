@@ -30,6 +30,7 @@ public class BallController : MonoBehaviour
 
     private Vector3 lastPosition;
     private Vector3 rawCueLine;
+    public Transform startTransform;
 
     void Awake()
     {
@@ -42,6 +43,7 @@ public class BallController : MonoBehaviour
         putts = 0;
         powerPercent = 0;
         holeTime = 0;
+        startTransform.GetComponent<MeshRenderer>().enabled = false;
     }
 
     void Update()
@@ -167,5 +169,16 @@ public class BallController : MonoBehaviour
             ball.angularVelocity = Vector3.zero;
             transform.position = lastPosition;
         }
+    }
+
+    public void SetUpBall(Color colour)
+    {
+        transform.position = startTransform.position;
+        ball.velocity = Vector3.zero;
+        ball.angularVelocity = Vector3.zero;
+        GetComponent<MeshRenderer>().material.SetColor("_Color", colour);
+        line.material.SetColor("_Color", colour);
+        line.enabled = true;
+        putts = 0;
     }
 }
