@@ -12,6 +12,7 @@ public class BallController : MonoBehaviour
     public float changeAngleSpeed;
     public float lineLengthMultiplier;
     private LineRenderer line;
+    private TrailRenderer trail;
     private Rigidbody ball;
     public float minHoleTime;
     private float powerPercent;
@@ -41,6 +42,8 @@ public class BallController : MonoBehaviour
            The default is too low. Raise it to 1000. */
         ball.maxAngularVelocity = 1000;
         line = GetComponent<LineRenderer>();
+        trail = GetComponent<TrailRenderer>();
+        trailDuration = trail.time;
         putts = 0;
         powerPercent = 0;
         holeTime = 0;
@@ -176,6 +179,8 @@ public class BallController : MonoBehaviour
     public void SetUpBall(Color colour)
     {
         transform.position = startTransform.position;
+        trail.Clear();
+
         ball.velocity = Vector3.zero;
         ball.angularVelocity = Vector3.zero;
         GetComponent<MeshRenderer>().material.SetColor("_Color", colour);

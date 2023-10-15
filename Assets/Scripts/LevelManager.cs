@@ -23,6 +23,7 @@ public class LevelManager : MonoBehaviour
     {
         ball.SetUpBall(playerRecord.playerColours[playerIndex]);
         labelPlayerName.text = playerRecord.playerList[playerIndex].name;
+        Debug.Log($"Setting up player: {playerRecord.playerList[playerIndex].name}");
     }
 
     public void NextPlayer(int prevPutts)
@@ -30,13 +31,14 @@ public class LevelManager : MonoBehaviour
         playerRecord.AddPutts(playerIndex, prevPutts);
         if (playerIndex < playerRecord.playerList.Count - 1)
         {
-            ball.SetUpBall(playerRecord.playerColours[++playerIndex]);
+            ++playerIndex;
+            SetUpPlayer();
         }
         else
         {
             if (playerRecord.levelIndex == playerRecord.levels.Length - 1)
             {
-                // load the scoreboard scene
+                Debug.Log("Scoreboard");
             }
             else
             {

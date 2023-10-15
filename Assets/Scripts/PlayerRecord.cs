@@ -21,6 +21,8 @@ public class PlayerRecord : MonoBehaviour
     public List<Player> playerList;
     public string[] levels;
     public Color[] playerColours;
+
+    [HideInInspector]
     public int levelIndex;
     public void AddPlayer(string name)
     {
