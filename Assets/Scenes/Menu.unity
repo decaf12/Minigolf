@@ -571,6 +571,7 @@ MonoBehaviour:
   inputPlayerName: {fileID: 1971550302}
   playerRecord: {fileID: 1784397796}
   buttonStart: {fileID: 508156767}
+  buttonAddPlayer: {fileID: 108844310}
 --- !u!1 &508156765
 GameObject:
   m_ObjectHideFlags: 0
@@ -1246,8 +1247,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d037a9e5b56d96f4b9cbe65cf9334296, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levels: []
-  playerColours: []
+  levels:
+  - Level 1
+  playerColours:
+  - {r: 1, g: 0.06132078, b: 0.06132078, a: 0}
+  - {r: 0, g: 0.6936636, b: 0.990566, a: 0}
+  - {r: 0.9339623, g: 0.82702523, b: 0, a: 0}
 --- !u!4 &1784397797
 Transform:
   m_ObjectHideFlags: 0
