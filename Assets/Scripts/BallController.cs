@@ -20,10 +20,10 @@ public class BallController : MonoBehaviour
         get {return powerPercent;}
     }
 
-    private float putts;
+    private int putts;
     private float holeTime;
 
-    public float Putts
+    public int Putts
     {
         get { return putts; }
     }
@@ -31,6 +31,7 @@ public class BallController : MonoBehaviour
     private Vector3 lastPosition;
     private Vector3 rawCueLine;
     public Transform startTransform;
+    public LevelManager levelManager;
 
     void Awake()
     {
@@ -38,7 +39,7 @@ public class BallController : MonoBehaviour
 
         /* Cap on how fast the ball can spin.
            The default is too low. Raise it to 1000. */
-        ball.maxAngularVelocity = 1000; 
+        ball.maxAngularVelocity = 1000;
         line = GetComponent<LineRenderer>();
         putts = 0;
         powerPercent = 0;
@@ -101,7 +102,7 @@ public class BallController : MonoBehaviour
     }
     private void UpdateLinePositions()
     {
-        Vector3 cueLine = (rawCueLine.magnitude > 1 
+        Vector3 cueLine = (rawCueLine.magnitude > 1
             ? rawCueLine.normalized
             : rawCueLine)
             * lineLengthMultiplier;
@@ -118,7 +119,7 @@ public class BallController : MonoBehaviour
             transform.position,
             transform.position + cueLine
         };
-        
+
         line.SetPositions(positions);
     }
 
@@ -143,7 +144,8 @@ public class BallController : MonoBehaviour
         holeTime += Time.deltaTime;
         if (holeTime >= minHoleTime)
         {
-            Debug.Log($"I'm in the hole and it only took me {putts} putts to get it in.");
+            // Debug.Log($"I'm in the hole and it only took me {putts} putts to get it in.");
+            levelManager.NextPlayer(putts);
             holeTime = 0;
         }
     }
