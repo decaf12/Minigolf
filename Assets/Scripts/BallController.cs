@@ -33,10 +33,13 @@ public class BallController : MonoBehaviour
     private Vector3 rawCueLine;
     public Transform startTransform;
     public LevelManager levelManager;
+    public Camera mainCamera;
+    private Vector3 offset;
 
     void Awake()
     {
         ball = GetComponent<Rigidbody>();
+        offset = ball.transform.position - mainCamera.transform.position;
 
         /* Cap on how fast the ball can spin.
            The default is too low. Raise it to 1000. */
@@ -70,15 +73,21 @@ public class BallController : MonoBehaviour
 
         rawCueLine = CalculateRawCueLine(worldPoint.Value);
 
-        UpdatePower();
-        UpdateLinePositions();
-
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButton(0))
+        {
+            UpdatePower();
+            UpdateLinePositions();
+        }
+        else if (Input.GetMouseButtonUp(0))
         {
             Putt(worldPoint.Value);
         }
     }
 
+    void LateUpdate()
+    {
+        mainCamera.transform.position = ball.transform.position - offset;
+    }
     private Vector3? CastMouseClickRay()
     {
         Vector3 screenMousePosFar = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.farClipPlane);
