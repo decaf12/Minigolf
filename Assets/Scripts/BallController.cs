@@ -33,13 +33,14 @@ public class BallController : MonoBehaviour
     private Vector3 rawCueLine;
     public Transform startTransform;
     public LevelManager levelManager;
-    public Camera mainCamera;
+    // public Camera mainCamera;
     private Vector3 offset;
+    private bool isAiming;
 
     void Awake()
     {
         ball = GetComponent<Rigidbody>();
-        offset = ball.transform.position - mainCamera.transform.position;
+        // offset = ball.transform.position - mainCamera.transform.position;
 
         /* Cap on how fast the ball can spin.
            The default is too low. Raise it to 1000. */
@@ -50,6 +51,7 @@ public class BallController : MonoBehaviour
         powerPercent = 0;
         holeTime = 0;
         startTransform.GetComponent<MeshRenderer>().enabled = false;
+        isAiming = false;
     }
 
     void Update()
@@ -73,21 +75,44 @@ public class BallController : MonoBehaviour
 
         rawCueLine = CalculateRawCueLine(worldPoint.Value);
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            UpdatePower();
+            isAiming = true;
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            if (!isAiming)
+            {
+                return;
+            }
+            
+            if (Input.GetMouseButtonDown(1))
+            {
+                Debug.Log("right clicked");
+                isAiming = false;
+                powerPercent = 0;
+                rawCueLine = Vector3.zero;
+            }
+            else
+            {
+                UpdatePower();
+            }
             UpdateLinePositions();
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            Putt(worldPoint.Value);
+            if (isAiming)
+            {
+                Putt(worldPoint.Value);
+            }
+            isAiming = false;
         }
     }
 
-    void LateUpdate()
-    {
-        mainCamera.transform.position = ball.transform.position - offset;
-    }
+    // void LateUpdate()
+    // {
+    //     mainCamera.transform.position = ball.transform.position - offset;
+    // }
     private Vector3? CastMouseClickRay()
     {
         Vector3 screenMousePosFar = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.farClipPlane);

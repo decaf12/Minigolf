@@ -58,11 +58,31 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: ebb5b01e57ce1d9448616b4afde5ede3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 58ae9550aff1d3e469fd1b34fabf8290, type: 2}
+    - target: {fileID: -7511558181221131132, guid: ebb5b01e57ce1d9448616b4afde5ede3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: a5bd511024f021f489a228f1d71b8441, type: 2}
+    - target: {fileID: -7511558181221131132, guid: ebb5b01e57ce1d9448616b4afde5ede3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: a5bd511024f021f489a228f1d71b8441, type: 2}
     - target: {fileID: 919132149155446097, guid: ebb5b01e57ce1d9448616b4afde5ede3,
         type: 3}
       propertyPath: m_Name
       value: windmill
       objectReference: {fileID: 0}
+    - target: {fileID: 4630957511536181541, guid: ebb5b01e57ce1d9448616b4afde5ede3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 58ae9550aff1d3e469fd1b34fabf8290, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
