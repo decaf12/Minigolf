@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using UnityEngine.WSA;
 
 public class BallController : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class BallController : MonoBehaviour
 
     void Awake()
     {
+        UnityEngine.Cursor.visible = false;
         ball = GetComponent<Rigidbody>();
 
         /* Cap on how fast the ball can spin.
@@ -48,7 +50,6 @@ public class BallController : MonoBehaviour
         holeTime = 0;
         startTransform.GetComponent<MeshRenderer>().enabled = false;
     }
-
     void Update()
     {
         if (ball.velocity.magnitude > 0.01f || holeTime > 0)
@@ -86,8 +87,8 @@ public class BallController : MonoBehaviour
             else
             {
                 UpdatePower();
+                UpdateLinePositions();
             }
-            UpdateLinePositions();
         }
         else if (Input.GetMouseButtonUp(0))
         {

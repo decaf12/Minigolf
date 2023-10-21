@@ -23,7 +23,6 @@ public class LevelManager : MonoBehaviour
     {
         ball.SetUpBall(playerRecord.playerColours[playerIndex]);
         labelPlayerName.text = playerRecord.playerList[playerIndex].name;
-        Debug.Log($"Setting up player: {playerRecord.playerList[playerIndex].name}");
     }
 
     public void NextPlayer(int prevPutts)
