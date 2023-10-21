@@ -33,14 +33,10 @@ public class BallController : MonoBehaviour
     private Vector3 rawCueLine;
     public Transform startTransform;
     public LevelManager levelManager;
-    // public Camera mainCamera;
-    private Vector3 offset;
-    private bool isAiming;
 
     void Awake()
     {
         ball = GetComponent<Rigidbody>();
-        // offset = ball.transform.position - mainCamera.transform.position;
 
         /* Cap on how fast the ball can spin.
            The default is too low. Raise it to 1000. */
@@ -51,7 +47,6 @@ public class BallController : MonoBehaviour
         powerPercent = 0;
         holeTime = 0;
         startTransform.GetComponent<MeshRenderer>().enabled = false;
-        isAiming = false;
     }
 
     void Update()
@@ -61,10 +56,6 @@ public class BallController : MonoBehaviour
             line.enabled = false;
             powerPercent = 0;
             return;
-        }
-        else
-        {
-            line.enabled = true;
         }
 
         Vector3? worldPoint = CastMouseClickRay();
@@ -77,19 +68,18 @@ public class BallController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            isAiming = true;
+            line.enabled = true;
         }
         else if (Input.GetMouseButton(0))
         {
-            if (!isAiming)
+            if (!line.enabled)
             {
                 return;
             }
             
             if (Input.GetMouseButtonDown(1))
             {
-                Debug.Log("right clicked");
-                isAiming = false;
+                line.enabled = false;
                 powerPercent = 0;
                 rawCueLine = Vector3.zero;
             }
@@ -101,18 +91,14 @@ public class BallController : MonoBehaviour
         }
         else if (Input.GetMouseButtonUp(0))
         {
-            if (isAiming)
+            if (line.enabled)
             {
                 Putt(worldPoint.Value);
             }
-            isAiming = false;
+            line.enabled = false;
         }
     }
 
-    // void LateUpdate()
-    // {
-    //     mainCamera.transform.position = ball.transform.position - offset;
-    // }
     private Vector3? CastMouseClickRay()
     {
         Vector3 screenMousePosFar = new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.farClipPlane);
@@ -217,9 +203,7 @@ public class BallController : MonoBehaviour
         ball.velocity = Vector3.zero;
         ball.angularVelocity = Vector3.zero;
         GetComponent<MeshRenderer>().material.color = colour;
-        Debug.Log($"Ball colour: {colour}");
         line.material.SetColor("_Color", colour);
-        line.enabled = true;
         putts = 0;
     }
 }
