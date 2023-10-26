@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,7 +35,7 @@ public class LevelManager : MonoBehaviour
         {
             if (playerRecord.levelIndex == playerRecord.levels.Length - 1)
             {
-                Debug.Log("Scoreboard");
+                SceneManager.LoadScene("Scoreboard");
             }
             else
             {

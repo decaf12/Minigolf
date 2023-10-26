@@ -1,11 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using Cinemachine;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
-using UnityEngine.WSA;
 
 public class BallController : MonoBehaviour
 {
@@ -34,6 +29,7 @@ public class BallController : MonoBehaviour
     private Vector3 rawCueLine;
     public Transform startTransform;
     public LevelManager levelManager;
+    public CinemachineFreeLook freeCamera;
 
     void Awake()
     {
@@ -198,7 +194,7 @@ public class BallController : MonoBehaviour
 
     public void SetUpBall(Color colour)
     {
-        transform.position = startTransform.position;
+        transform.SetPositionAndRotation(startTransform.position, Quaternion.identity);
         trail.Clear();
 
         ball.velocity = Vector3.zero;
@@ -206,5 +202,6 @@ public class BallController : MonoBehaviour
         GetComponent<MeshRenderer>().material.color = colour;
         line.material.SetColor("_Color", colour);
         putts = 0;
+        freeCamera.ForceCameraPosition(transform.position, transform.rotation);
     }
 }
