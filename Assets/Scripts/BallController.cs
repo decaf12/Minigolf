@@ -45,6 +45,7 @@ public class BallController : MonoBehaviour
         powerPercent = 0;
         holeTime = 0;
         startTransform.GetComponent<MeshRenderer>().enabled = false;
+        CinemachineCore.GetInputAxis = GetAxisCustom;
     }
     void Update()
     {
@@ -94,6 +95,11 @@ public class BallController : MonoBehaviour
             }
             line.enabled = false;
         }
+    }
+
+    private float GetAxisCustom(string axisName)
+    {
+        return Input.GetMouseButton(0) ? 0 : UnityEngine.Input.GetAxis(axisName);
     }
 
     private Vector3? CastMouseClickRay()
