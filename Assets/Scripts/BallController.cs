@@ -1,6 +1,8 @@
 using System;
 using Cinemachine;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BallController : MonoBehaviour
 {
@@ -49,6 +51,11 @@ public class BallController : MonoBehaviour
     }
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
         if (ball.velocity.magnitude > 0.01f || holeTime > 0)
         {
             line.enabled = false;
@@ -156,6 +163,14 @@ public class BallController : MonoBehaviour
         ++putts;
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Bonus"))
+        {
+            putts -= 2;
+            other.gameObject.SetActive(false);
+        }
+    }
     private void OnTriggerStay(Collider other)
     {
         if (other.tag == "Hole")
@@ -169,7 +184,6 @@ public class BallController : MonoBehaviour
         holeTime += Time.deltaTime;
         if (holeTime >= minHoleTime)
         {
-            // Debug.Log($"I'm in the hole and it only took me {putts} putts to get it in.");
             levelManager.NextPlayer(putts);
             holeTime = 0;
         }
